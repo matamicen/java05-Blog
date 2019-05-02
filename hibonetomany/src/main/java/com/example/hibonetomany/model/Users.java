@@ -1,6 +1,6 @@
 package com.example.hibonetomany.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,6 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 
@@ -22,6 +27,10 @@ public class Users {
 		@GeneratedValue
 		private Long id;
 		private String name;
+		
+		
+		@JsonSerialize(using=JsonDateSerializer.class)
+		@JsonDeserialize(using=JsonDateDeserializer.class)
 		private Date fechanac;
 		
 		   @OneToMany(cascade = CascadeType.ALL, 

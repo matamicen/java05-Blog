@@ -1,0 +1,9 @@
+package com.example.hibonetomany.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.hibonetomany.model.Post;
+
+public interface DaoPost extends JpaRepository<Post, Long> {
+
+}
