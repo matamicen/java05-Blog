@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,6 +78,50 @@ public class MainController {
 		
 		
 		}
+	
+	
+	@GetMapping(path = {"/comment/{idpost}"})	
+	public ResponseEntity<Object> getCommentFromPost(@PathVariable Long idpost) {
+		
+		 System.out.println("idpost:"+idpost);
+		 Post pos = daopost.findById(idpost).orElse(null);
+		 
+		 List<PostComment> commentsFound = daopostcomment.findByPost(pos);
+		
+		
+		
+		JSONArray json_array= new JSONArray();
+		
+		if (commentsFound.size()>0) {	
+			 
+			
+			 for(PostComment com: commentsFound) {
+				 System.out.println("comment:"+com.getComment());
+				
+				 JSONObject aux = new JSONObject();
+				 aux.put("comment", com.getComment());
+				 aux.put("usuario", com.getUser().getName());
+				 json_array.put(aux);
+				
+		     }
+				 
+		 }
+				 
+		 JSONObject obj = new JSONObject();
+		 
+
+
+	     obj.put("error", 0);
+	     obj.put("results", json_array);
+
+	      
+
+	     	return ResponseEntity.ok().body(obj.toString());
+			
+		
+		
+		}
+	
 	
 	@PostMapping(path = {"/users"})
 	public Users create(@RequestBody Users user){
