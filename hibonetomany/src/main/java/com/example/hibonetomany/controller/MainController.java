@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,9 +40,9 @@ public class MainController {
 	
 
 	
-	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping(path = {"/users"})	
-	public ResponseEntity<Object> getAllBooks() {
+	public ResponseEntity<Object> getAllUsers() {
 		
 		
 		List<Users> usersFounds = daousers.findAll();
@@ -56,8 +57,10 @@ public class MainController {
 			 for(Users us: usersFounds) {
 				 System.out.println("book name:"+us.getName());
 				 JSONObject aux = new JSONObject();
+				 aux.put("id",us.getId());
 				 aux.put("name", us.getName());
 				 aux.put("fechaNacimiento", us.getFechanac());
+				 aux.put("avatar", us.getAvatar());
 				 json_array.put(aux);
 				
 		     }
@@ -80,27 +83,29 @@ public class MainController {
 		}
 	
 	
-	@GetMapping(path = {"/comment/{idpost}"})	
-	public ResponseEntity<Object> getCommentFromPost(@PathVariable Long idpost) {
-		
-		 System.out.println("idpost:"+idpost);
-		 Post pos = daopost.findById(idpost).orElse(null);
-		 
-		 List<PostComment> commentsFound = daopostcomment.findByPost(pos);
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping(path = {"/posts"})	
+	public ResponseEntity<Object> getAllPosts() {
 		
 		
+		List<Post> postsFounds = daopost.findAll();
+		
+		//
 		
 		JSONArray json_array= new JSONArray();
 		
-		if (commentsFound.size()>0) {	
+		if (postsFounds.size()>0) {	
 			 
 			
-			 for(PostComment com: commentsFound) {
-				 System.out.println("comment:"+com.getComment());
+			 for(Post post: postsFounds) {
 				
 				 JSONObject aux = new JSONObject();
-				 aux.put("comment", com.getComment());
-				 aux.put("usuario", com.getUser().getName());
+				 
+				 aux.put("id",post.getId());
+				 aux.put("title", post.getTitle());
+				 aux.put("review", post.getReview());
+				 aux.put("username", post.getUser().getName());
+				 aux.put("avatar", post.getUser().getAvatar());
 				 json_array.put(aux);
 				
 		     }
@@ -113,6 +118,66 @@ public class MainController {
 
 	     obj.put("error", 0);
 	     obj.put("results", json_array);
+
+	      
+
+	     	return ResponseEntity.ok().body(obj.toString());
+			
+		
+		
+		}
+	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping(path = {"/comment/{idpost}"})	
+	public ResponseEntity<Object> getCommentFromPost(@PathVariable Long idpost) {
+		
+		 System.out.println("idpost:"+idpost);
+		 Post pos = daopost.findById(idpost).orElse(null);
+		 
+		// JSONArray json_array1  = new JSONArray();
+		 JSONObject postjson = new JSONObject();
+		 
+		 postjson.put("title", pos.getTitle());
+		 postjson.put("review", pos.getReview());
+		 postjson.put("usuario", pos.getUser().getName());
+		 postjson.put("avatar", pos.getUser().getAvatar());
+		 postjson.put("id", pos.getId());
+		
+			 
+		 
+		 List<PostComment> commentsFound = daopostcomment.findByPost(pos);
+		
+		
+		
+		JSONArray json_array2= new JSONArray();
+		
+		if (commentsFound.size()>0) {	
+			 
+			
+			 for(PostComment com: commentsFound) {
+				 System.out.println("comment:"+com.getComment());
+				
+				 JSONObject aux = new JSONObject();
+				 
+				
+				 
+				 aux.put("comment", com.getComment());
+				 aux.put("usuariocomment", com.getUser().getName());
+				 aux.put("usuarioavatar", com.getUser().getAvatar());
+				 json_array2.put(aux);
+				
+		     }
+				 
+		 }
+		
+		     
+		 JSONObject obj = new JSONObject();
+		 
+
+
+	     obj.put("error", 0);
+	     obj.put("post", postjson);
+	     obj.put("results", json_array2);
 
 	      
 

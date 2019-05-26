@@ -27,6 +27,7 @@ public class Users {
 		@GeneratedValue
 		private Long id;
 		private String name;
+		private String avatar;
 		
 		
 		@JsonSerialize(using=JsonDateSerializer.class)
@@ -72,6 +73,14 @@ public class Users {
 		public void setComments(List<PostComment> comments) {
 			this.comments = comments;
 		}
+		public String getAvatar() {
+			return avatar;
+		}
+		public void setAvatar(String avatar) {
+			this.avatar = avatar;
+		}
+		
+		
 		
 		
 	
